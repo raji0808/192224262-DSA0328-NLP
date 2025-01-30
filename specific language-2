@@ -1,0 +1,29 @@
+class FiniteStateAutomaton:
+    def __init__(self):
+        """Initialize the finite state automaton with states and transitions."""
+        self.states = {0, 1, 2}  # States: 0 (start), 1 ('a' seen), 2 ('ab' seen)
+        self.start_state = 0
+        self.accept_state = 2
+        self.transitions = {
+            (0, 'a'): 1,
+            (1, 'b'): 2,
+            (2, 'a'): 1,  # Allows continuation of pattern detection
+            (2, 'b'): 2,  # Stays in accepting state if more 'b's follow
+        }
+    
+    def process_string(self, input_string):
+        """Process an input string and determine if it is accepted by the automaton."""
+        current_state = self.start_state
+        
+        for char in input_string:
+            current_state = self.transitions.get((current_state, char), 0)  # Reset if invalid transition
+        
+        return current_state == self.accept_state
+
+if __name__ == "__main__":
+    fsa = FiniteStateAutomaton()
+    test_cases = ["ab", "aab", "babb", "xyzab", "abab", "acb"]
+    
+    for test in test_cases:
+        result = "Accepted" if fsa.process_string(test) else "Rejected"
+        print(f"Input: {test} -> {result}")
